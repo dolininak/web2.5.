@@ -153,6 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 else {
   // Проверяем ошибки.
   $errors = FALSE;
+  echo $_POST['name'];
   if (empty($_POST['name']) || !preg_match('/^[a-zA-Z\s]{1,150}$/', $_POST['name'])) {
     // Выдаем куку на день с флажком об ошибке в поле fio.
     setcookie('name_error', '1', time() + 24 * 60 * 60);
@@ -298,8 +299,8 @@ else {
     $login = 'user_' . md5(uniqid()); 
     $password = md5(rand(1000, 9999));
     $password=md5($password."ujqlCVB456");
-    $_SESSION['login']=$login;
-    $_SESSION['password']=$password;
+
+    
     // Сохраняем в Cookies.
     setcookie('login', $login);
     setcookie('password', $password);
