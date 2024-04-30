@@ -27,9 +27,9 @@ if ( session_start() && $_COOKIE[session_name()]) {
     // Делаем перенаправление на форму.
     header('Location: ./');
     exit();
-  }
+  
 }
-}
+}}
 
 
 // В суперглобальном массиве $_SERVER PHP сохраняет некторые заголовки запроса HTTP
@@ -37,7 +37,7 @@ if ( session_start() && $_COOKIE[session_name()]) {
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 ?>
 
-<form action="index.php" method="post">
+<form action="index.php" method="POST">
   <input type="text" name="login" />
   <input type="password" name="password" />
   <input type="submit" value="Войти" />
@@ -54,12 +54,10 @@ else {
  $login = $_POST['login'];
  $password = $_POST['password'];
 
- // Подключение к базе данных (предположим, что у вас есть переменные $db_host, $db_name, $db_user, $db_pass)
-
  include ('conf3.php');
  $db = new PDO('mysql:host=localhost;dbname=u67432', $user, $pass,
    [PDO::ATTR_PERSISTENT => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
- $stmt = $db->prepare("SELECT * FROM application WHERE login = :login AND password = :password");
+ $stmt = $db->prepare("SELECT * FROM application WHERE login = :login AND pass = :password");
  $stmt->execute(['login' => $login, 'password' => $password]);
  $user = $stmt->fetch();
 
