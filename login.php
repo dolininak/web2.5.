@@ -12,12 +12,11 @@
 // файл login.php должен быть в кодировке UTF-8 без BOM.
 header('Content-Type: text/html; charset=UTF-8');
 session_name('my_sesssion');
-session_start(); 
 // В суперглобальном массиве $_SESSION хранятся переменные сессии.
 // Будем сохранять туда логин после успешной авторизации.
 $session_started = false;
 
-if (isset($_COOKIE[session_name()]) && session_start()) {
+if ( session_start() && $_COOKIE[session_name()]) {
   $session_started = true;
   if (!empty($_SESSION['login'])) {
     if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['logout'])) {
