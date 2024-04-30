@@ -16,7 +16,7 @@ session_name('my_sesssion');
 // Будем сохранять туда логин после успешной авторизации.
 $session_started = false;
 
-if ($_COOKIE[session_name()] && session_start()) {
+if (isset($_COOKIE[session_name()]) && session_start()) {
   $session_started = true;
   if (!empty($_SESSION['login'])) {
     if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['logout'])) {
