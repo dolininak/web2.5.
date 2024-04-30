@@ -153,7 +153,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 else {
   // Проверяем ошибки.
   $errors = FALSE;
-  echo $_POST['name'];
   if (empty($_POST['name']) || !preg_match('/^[a-zA-Z\s]{1,150}$/', $_POST['name'])) {
     // Выдаем куку на день с флажком об ошибке в поле fio.
     setcookie('name_error', '1', time() + 24 * 60 * 60);
@@ -304,6 +303,7 @@ else {
     // Сохраняем в Cookies.
     setcookie('login', $login);
     setcookie('password', $password);
+    setcookie(session_name(), '1');
     include ('conf3.php');
     $db = new PDO('mysql:host=localhost;dbname=u67432', $user, $pass,
       [PDO::ATTR_PERSISTENT => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);

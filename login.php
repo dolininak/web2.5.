@@ -69,7 +69,7 @@ else {
          session_start(); 
      } 
      // Если все ок, то авторизуем пользователя. 
-     setcookie(session_name(), '1');
+     
      $_SESSION['login'] = $login; 
      $_SESSION['password'] = $password;
      // Записываем ID пользователя. 
