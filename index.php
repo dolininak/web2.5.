@@ -297,7 +297,6 @@ else {
     // TODO: сделать механизм генерации, например функциями rand(), uniquid(), md5(), substr().
     $login = 'user_' . md5(uniqid()); 
     $password = md5(rand(1000, 9999));
-    $login=md5($login."ujqlC456");
     $password=md5($password."ujqlCVB456");
     $_SESSION['login']=$login;
     $_SESSION['password']=$password;
