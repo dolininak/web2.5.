@@ -299,6 +299,8 @@ else {
     $password = md5(rand(1000, 9999));
     $login=md5($login."ujqlC456");
     $password=md5($password."ujqlCVB456");
+    $_SESSION['login']=$login;
+    $_SESSION['password']=$password;
     // Сохраняем в Cookies.
     setcookie('login', $login);
     setcookie('password', $password);
@@ -316,8 +318,8 @@ else {
                 $_POST['pol'],
                 $_POST['bio'],
                 $_POST['agreement'],
-                $_SESSION['login'], 
-                $_SESSION['password']
+                $login,
+                $password
             ]);
             $application_id = $db->lastInsertId();
             foreach ($_POST['languages'] as $language) {
