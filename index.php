@@ -21,15 +21,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     // Удаляем куку, указывая время устаревания в прошлом.
     setcookie('save', '', 100000);
     setcookie('login', '', 100000);
-    setcookie('pass', '', 100000);
+    setcookie('password', '', 100000);
     // Выводим сообщение пользователю.
     $messages[] = 'Спасибо, результаты сохранены.';
     // Если в куках есть пароль, то выводим сообщение.
-    if (!empty($_COOKIE['pass'])) {
+    if (!empty($_COOKIE['password'])) {
       $messages[] = sprintf('Вы можете <a href="login.php">войти</a> с логином <strong>%s</strong>
         и паролем <strong>%s</strong> для изменения данных.',
         strip_tags($_COOKIE['login']),
-        strip_tags($_COOKIE['pass']));
+        strip_tags($_COOKIE['password']));
     }
   }
 
@@ -121,8 +121,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $db = new PDO('mysql:host=localhost;dbname=u67432', $user, $pass,
     [PDO::ATTR_PERSISTENT => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
     try {
-        $stmt = $db->prepare("SELECT * FROM application WHERE id = ?");
-          $stmt->execute([$application_id]);
+        $stmt = $db->prepare("SELECT * FROM  application a INNER JOIN application_programming_language b 
+        ON a.id = b.application_id INNER JOIN programming_language c
+  ON b.programming_language_id = c.id WHERE login = ? AND password = ?");
+          $stmt->execute([$_SESSION['login'], $_SESSION['password']]);
           $application = $stmt->fetch(PDO::FETCH_ASSOC);
 
  
@@ -133,13 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $values['pol'] = empty($application['pol']) ? '' :  strip_tags($application['pol']);
     $values['bio'] = empty($application['bio']) ? '' :  strip_tags($application['bio']);
     $values['agreement'] = empty($application['agreement']) ? '' :  strip_tags($application['agreement']);
-    
-            $stmt = $db->prepare("SELECT languages FROM programming_language 
-            INNER JOIN application_programming_language 
-            ON programming_language.id = application_programming_language.programming_language_id 
-            WHERE application_programming_language.application_id = $application_id");
-            $applicationlanguages = $stmt->fetch(PDO::FETCH_ASSOC);
-            $values['languages'] = empty($applicationlanguages['languages']) ? [] :  json_decode($applicationlanguages['languages'], true);
+    $values['languages'] = empty($application['languages']) ? [] :  json_decode($application['languages'], true);
       }
       catch(PDOException $e){
         print('Error : ' . $e->getMessage());
@@ -272,7 +268,9 @@ else {
     [PDO::ATTR_PERSISTENT => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
 
     try {
-        $stmt = $db->prepare("INSERT INTO application (name, tel, email, data, pol, bio, agreement) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $db->prepare("UPDATE application a INNER JOIN application_programming_language b 
+        ON a.id = b.application_id INNER JOIN programming_language  c
+  ON b.programming_language_id = c.id SET name = ?, tel = ?, email = ?, data = ?, pol = ?, bio = ?, agreement = ?, languages=?, updated_at = NOW() WHERE login = ? AND password = ?");
           $stmt->execute([
               $_POST['name'],
               $_POST['tel'],
@@ -280,18 +278,12 @@ else {
               $_POST['data'],
               $_POST['pol'],
               $_POST['bio'],
-              $_POST['agreement']
+              $_POST['agreement'],
+              $_POST['languages'],
+              $_SESSION['login'], // логин пользователя из сессии
+            $_SESSION['password'] // пароль пользователя из сессии
           ]);
-          $application_id = $db->lastInsertId();
-          foreach ($_POST['languages'] as $language) {
-            $stmt = $db->prepare("INSERT INTO programming_language (languages) VALUES (?)");
-            $stmt->execute([$language]);
-      
-            $programming_language_id = $db->lastInsertId();
-      
-            $stmt = $db->prepare("INSERT INTO application_programming_language (application_id, programming_language_id) VALUES (?, ?)");
-            $stmt->execute([$application_id, $programming_language_id]);
-          }
+          
       }
       catch(PDOException $e){
         print('Error : ' . $e->getMessage());
@@ -303,22 +295,13 @@ else {
   else {
     // Генерируем уникальный логин и пароль.
     // TODO: сделать механизм генерации, например функциями rand(), uniquid(), md5(), substr().
-    $login = filter_var(trim($_POST['login']),FILTER_UNSAFE_RAW);
-    $password = filter_var(trim($_POST['password']),FILTER_UNSAFE_RAW);
-
-    if(mb_strlen($login)<5 || mb_strlen($login)>15){
-      echo "недопустимая длина логина" ;
-      exit();
-    }
-    if(mb_strlen($password)<5 || mb_strlen($password)>32){
-      echo "недопустимая длина пароля" ;
-      exit();
-    }
-    $login=md5($login."uj456");
+    $login = 'user_' . md5(uniqid()); 
+    $password = md5(rand(1000, 9999));
+    $login=md5($login."ujqlC456");
     $password=md5($password."ujqlCVB456");
     // Сохраняем в Cookies.
     setcookie('login', $login);
-    setcookie('pass', $pass);
+    setcookie('password', $password);
     include ('conf3.php');
     $db = new PDO('mysql:host=localhost;dbname=u67432', $user, $pass,
       [PDO::ATTR_PERSISTENT => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
