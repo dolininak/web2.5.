@@ -100,14 +100,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
   // Складываем предыдущие значения полей в массив, если есть.
   // При этом санитизуем все данные для безопасного отображения в браузере.
   $values = array();
-  $values['name'] = empty($_COOKIE['name_value']) ? '' :  strip_tags($_COOKIE['name_value']);
-  $values['tel'] = empty($_COOKIE['tel_value']) ? '' :  strip_tags($_COOKIE['tel_value']);
-  $values['email'] = empty($_COOKIE['email_value']) ? '' :  strip_tags($_COOKIE['email_value']);
-  $values['data'] = empty($_COOKIE['data_value']) ? '' :  strip_tags($_COOKIE['data_value']);
-  $values['pol'] = empty($_COOKIE['pol_value']) ? '' :  strip_tags($_COOKIE['pol_value']);
+  $values['name'] = empty($_COOKIE['name_value']) ? '' :  $_COOKIE['name_value'];
+  $values['tel'] = empty($_COOKIE['tel_value']) ? '' :  $_COOKIE['tel_value'];
+  $values['email'] = empty($_COOKIE['email_value']) ? '' :  $_COOKIE['email_value'];
+  $values['data'] = empty($_COOKIE['data_value']) ? '' :  $_COOKIE['data_value'];
+  $values['pol'] = empty($_COOKIE['pol_value']) ? '' :  $_COOKIE['pol_value'];
   $values['languages'] = empty($_COOKIE['languages_value']) ? [] :  json_decode($_COOKIE['languages_value'], true);
-  $values['bio'] = empty($_COOKIE['bio_value']) ? '' :  strip_tags($_COOKIE['bio_value']);
-  $values['agreement'] = empty($_COOKIE['agreement_value']) ? '' :  strip_tags($_COOKIE['agreement_value']);
+  $values['bio'] = empty($_COOKIE['bio_value']) ? '' :  $_COOKIE['bio_value'];
+  $values['agreement'] = empty($_COOKIE['agreement_value']) ? '' :  $_COOKIE['agreement_value'];
   
 
   // Если нет предыдущих ошибок ввода, есть кука сессии, начали сессию и
@@ -128,13 +128,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
           $application = $stmt->fetch(PDO::FETCH_ASSOC);
 
  
-    $values['name'] = empty($application['name']) ? '' :  strip_tags($application['name']);
-    $values['tel'] = empty($application['tel']) ? '' :  strip_tags($application['tel']);
-    $values['email'] = empty($application['email']) ? '' :  strip_tags($application['email']);
-    $values['data'] = empty($application['data']) ? '' :  strip_tags($application['data']);
-    $values['pol'] = empty($application['pol']) ? '' :  strip_tags($application['pol']);
-    $values['bio'] = empty($application['bio']) ? '' :  strip_tags($application['bio']);
-    $values['agreement'] = empty($application['agreement']) ? '' :  strip_tags($application['agreement']);
+    $values['name'] = empty($application['name']) ? '' :  $application['name'];
+    $values['tel'] = empty($application['tel']) ? '' :  $application['tel'];
+    $values['email'] = empty($application['email']) ? '' :  $application['email'];
+    $values['data'] = empty($application['data']) ? '' :  $application['data'];
+    $values['pol'] = empty($application['pol']) ? '' :  $application['pol'];
+    $values['bio'] = empty($application['bio']) ? '' :  $application['bio'];
+    $values['agreement'] = empty($application['agreement']) ? '' : $application['agreement'];
     $values['languages'] = empty($application['languages']) ? [] :  json_decode($application['languages'], true);
       }
       catch(PDOException $e){
