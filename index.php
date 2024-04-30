@@ -316,8 +316,8 @@ else {
                 $_POST['pol'],
                 $_POST['bio'],
                 $_POST['agreement'],
-                $_POST['login'],
-                $_POST['password']
+                $_SESSION['login'], 
+                $_SESSION['password']
             ]);
             $application_id = $db->lastInsertId();
             foreach ($_POST['languages'] as $language) {
