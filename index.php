@@ -282,19 +282,16 @@ else {
               $_SESSION['login'], // логин пользователя из сессии
             $_SESSION['password'] // пароль пользователя из сессии
           ]);
-          $stmt = $db->prepare("DELETE b FROM application_programming_language b 
-        INNER JOIN application a ON b.application_id = a.id 
-        WHERE a.login = ? AND a.pass = ?");
-    $stmt->execute([$_SESSION['login'], $_SESSION['password']]);
-
-    // Добавляем новые связи для каждого выбранного языка
-    foreach ($_POST['languages'] as $language) {
-        $stmt = $db->prepare("INSERT INTO application_programming_language (application_id, programming_language_id) 
-            SELECT a.id, c.id FROM application a 
-            CROSS JOIN programming_language c 
-            WHERE a.login = ? AND a.pass = ? AND c.languages = ?");
-        $stmt->execute([$_SESSION['login'], $_SESSION['password'], $language]);
-    }}
+          $stmt = $db->prepare("DELETE pl FROM programming_language pl
+          INNER JOIN application_programming_language apl ON pl.id = apl.programming_language_id
+          INNER JOIN application a ON apl.application_id = a.id
+          WHERE a.login = ? AND a.pass = ?");
+          $stmt->execute([$_SESSION['login'], $_SESSION['password']]);
+      // Добавляем новые строки с языками программирования
+      foreach ($_POST['languages'] as $language) {
+          $stmt = $db->prepare("INSERT INTO programming_language (languages) VALUES (?)");
+          $stmt->execute([$language]);
+      }}
       catch(PDOException $e){
         print('Error : ' . $e->getMessage());
         exit();
