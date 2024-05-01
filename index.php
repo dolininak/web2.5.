@@ -283,9 +283,11 @@ else {
             $_SESSION['password'] // пароль пользователя из сессии
           ]);
           foreach ($_POST['languages'] as $language) {
-            $stmt = $db->prepare("UPDATE application a INNER JOIN application_programming_language b 
-            ON a.id = b.application_id INNER JOIN programming_language  c
-      ON b.programming_language_id = c.id SET c.language=?  WHERE a.login = ? AND a.pass = ?");
+            $stmt = $db->prepare("UPDATE programming_language c 
+            INNER JOIN application_programming_language b ON c.id = b.programming_language_id 
+            INNER JOIN application a ON b.application_id = a.id 
+            SET language = ? 
+            WHERE a.login = ? AND a.pass = ?");
              $stmt->execute([$language, $_SESSION['login'], $_SESSION['password']]);
       }}
       catch(PDOException $e){
