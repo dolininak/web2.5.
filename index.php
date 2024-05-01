@@ -286,7 +286,7 @@ else {
             $stmt = $db->prepare("UPDATE programming_language c 
             INNER JOIN application_programming_language b ON c.id = b.programming_language_id 
             INNER JOIN application a ON b.application_id = a.id 
-            SET language = ? 
+            SET c.language = ? 
             WHERE a.login = ? AND a.pass = ?");
              $stmt->execute([$language, $_SESSION['login'], $_SESSION['password']]);
       }}
