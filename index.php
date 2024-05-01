@@ -268,6 +268,16 @@ else {
     [PDO::ATTR_PERSISTENT => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
 
     try {
+      $stmt = $db->prepare("DELETE pl FROM programming_language pl
+          INNER JOIN application_programming_language apl ON pl.id = apl.programming_language_id
+          INNER JOIN application a ON apl.application_id = a.id
+          WHERE a.login = ? AND a.pass = ?");
+          $stmt->execute([$_SESSION['login'], $_SESSION['password']]);
+      // Добавляем новые строки с языками программирования
+      foreach ($_POST['languages'] as $language) {
+          $stmt = $db->prepare("INSERT INTO programming_language (languages) VALUES (?)");
+          $stmt->execute([$language]);
+      }
         $stmt = $db->prepare("UPDATE application a INNER JOIN application_programming_language b 
         ON a.id = b.application_id INNER JOIN programming_language  c
   ON b.programming_language_id = c.id SET name = ?, tel = ?, email = ?, data = ?, pol = ?, bio = ?, agreement = ?  WHERE login = ? AND pass = ?");
@@ -282,16 +292,7 @@ else {
               $_SESSION['login'], // логин пользователя из сессии
             $_SESSION['password'] // пароль пользователя из сессии
           ]);
-          $stmt = $db->prepare("DELETE pl FROM programming_language pl
-          INNER JOIN application_programming_language apl ON pl.id = apl.programming_language_id
-          INNER JOIN application a ON apl.application_id = a.id
-          WHERE a.login = ? AND a.pass = ?");
-          $stmt->execute([$_SESSION['login'], $_SESSION['password']]);
-      // Добавляем новые строки с языками программирования
-      foreach ($_POST['languages'] as $language) {
-          $stmt = $db->prepare("INSERT INTO programming_language (languages) VALUES (?)");
-          $stmt->execute([$language]);
-      }}
+          }
       catch(PDOException $e){
         print('Error : ' . $e->getMessage());
         exit();
