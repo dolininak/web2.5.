@@ -285,7 +285,7 @@ else {
               $_SESSION['login'], // логин пользователя из сессии
             $_SESSION['password'] // пароль пользователя из сессии
           ]);
-          $stmt = $db->prepare("SELECT * FROM application WHERE WHERE login = ? AND pass = ?");
+          $stmt = $db->prepare("SELECT * FROM application WHERE  login = ? AND pass = ?");
           $stmt->execute([ $_SESSION['login'], $_SESSION['password']]);
           $application_id = $stmt->fetch(PDO::FETCH_LAZY);
           
