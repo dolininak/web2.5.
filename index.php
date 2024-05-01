@@ -268,16 +268,9 @@ else {
     [PDO::ATTR_PERSISTENT => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
 
     try {
-      $stmt = $db->prepare("DELETE pl FROM programming_language pl
-          INNER JOIN application_programming_language apl ON pl.id = apl.programming_language_id
-          INNER JOIN application a ON apl.application_id = a.id
-          WHERE a.login = ? AND a.pass = ?");
-          $stmt->execute([$_SESSION['login'], $_SESSION['password']]);
-      // Добавляем новые строки с языками программирования
-      foreach ($_POST['languages'] as $language) {
-          $stmt = $db->prepare("INSERT INTO programming_language (languages) VALUES (?)");
-          $stmt->execute([$language]);
-      }
+      
+      
+    
         $stmt = $db->prepare("UPDATE application a INNER JOIN application_programming_language b 
         ON a.id = b.application_id INNER JOIN programming_language  c
   ON b.programming_language_id = c.id SET name = ?, tel = ?, email = ?, data = ?, pol = ?, bio = ?, agreement = ?  WHERE login = ? AND pass = ?");
@@ -292,6 +285,21 @@ else {
               $_SESSION['login'], // логин пользователя из сессии
             $_SESSION['password'] // пароль пользователя из сессии
           ]);
+          $stmt = $db->prepare("SELECT * FROM application WHERE WHERE login = ? AND pass = ?");
+          $stmt->execute([ $_SESSION['login'], $_SESSION['password']]);
+          $application_id = $stmt->fetch(PDO::FETCH_LAZY);
+          
+          $stmt = $db->prepare('DELETE FROM application_programming_language WHERE application_id = ?');
+          $stmt->execute([$application_id]);
+          foreach ($_POST['languages'] as $language) {
+            $stmt = $db->prepare("INSERT INTO programming_language (languages) VALUES (?)");
+            $stmt->execute([$language]);
+      
+            $programming_language_id = $db->lastInsertId();
+      
+            $stmt = $db->prepare("INSERT INTO application_programming_language (application_id, programming_language_id) VALUES (?, ?)");
+            $stmt->execute([$application_id, $programming_language_id]);
+          }
           }
       catch(PDOException $e){
         print('Error : ' . $e->getMessage());
