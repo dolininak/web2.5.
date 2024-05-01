@@ -287,7 +287,8 @@ else {
           ]);
           $stmt = $db->prepare("SELECT id FROM application WHERE  login = ? AND pass = ?");
           $stmt->execute([ $_SESSION['login'], $_SESSION['password']]);
-          $application_id = $stmt->fetch(PDO::FETCH_LAZY);
+          $application_data = $stmt->fetch(PDO::FETCH_ASSOC); 
+          $application_id = $application_data['id'];
           
           $stmt = $db->prepare('DELETE FROM application_programming_language WHERE application_id = ?');
           $stmt->execute([$application_id]);
