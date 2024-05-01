@@ -286,7 +286,7 @@ else {
             $stmt = $db->prepare("UPDATE application a INNER JOIN application_programming_language b 
             ON a.id = b.application_id INNER JOIN programming_language  c
       ON b.programming_language_id = c.id SET c.language=?  WHERE a.login = ? AND a.pass = ?");
-            $stmt->execute([$language]);
+             $stmt->execute([$language, $_SESSION['login'], $_SESSION['password']]);
       }}
       catch(PDOException $e){
         print('Error : ' . $e->getMessage());
