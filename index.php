@@ -270,7 +270,7 @@ else {
     try {
         $stmt = $db->prepare("UPDATE application a INNER JOIN application_programming_language b 
         ON a.id = b.application_id INNER JOIN programming_language  c
-  ON b.programming_language_id = c.id SET name = ?, tel = ?, email = ?, data = ?, pol = ?, bio = ?, agreement = ?, languages=?  WHERE login = ? AND pass = ?");
+  ON b.programming_language_id = c.id SET name = ?, tel = ?, email = ?, data = ?, pol = ?, bio = ?, agreement = ?  WHERE login = ? AND pass = ?");
           $stmt->execute([
               $_POST['name'],
               $_POST['tel'],
@@ -279,12 +279,15 @@ else {
               $_POST['pol'],
               $_POST['bio'],
               $_POST['agreement'],
-              $_POST['languages'],
               $_SESSION['login'], // логин пользователя из сессии
             $_SESSION['password'] // пароль пользователя из сессии
           ]);
-          
-      }
+          foreach ($_POST['languages'] as $language) {
+            $stmt = $db->prepare("UPDATE application a INNER JOIN application_programming_language b 
+            ON a.id = b.application_id INNER JOIN programming_language  c
+      ON b.programming_language_id = c.id SET c.language=?  WHERE a.login = ? AND a.pass = ?");
+            $stmt->execute([$language]);
+      }}
       catch(PDOException $e){
         print('Error : ' . $e->getMessage());
         exit();
